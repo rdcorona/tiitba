@@ -21,52 +21,28 @@ def detrend(t, a, ntrv=60):
 	from scipy.interpolate import interp1d
 	from obspy.signal import detrend
 	import numpy as np
-	a = a - a[0]
-	t = t - t[0]
+	a = np.array(a) - a[0]
+	t = np.array(t) - t[0]
 	dt = np.round(t[1] -t[0], 2)
-	ki = 0
-	kf = 1
-	ke = 0
-	ipb = 1
-	amp1 = np.array([]) 
-	tder = np.array([]) 
-	der = np.array([]) 
+	amp1 = np.zeros_like(a)
+	tder = np.zeros_like(a)
+	trend = np.zeros_like(a)
+	n = len(a)
+	for start in range(0, n, ntrv):
+		end = min(start + ntrv, n)
+		dt = t[start:end] - t[start]
+		tder = np.append(tder, (t[start:end] + t[start]) / 2)  # Derivative time
+		if len(dt) < 2:
+			amp1[start:end] = a[start:end]
+			continue
+		coef = np.polyfit(dt, a[start:end], 1)  # liena fit: coef[0] slope
+		trend = np.append(trend, coef[0] * dt + coef[1])
 
-	while ke < len(a):
-		ke = (np.abs(t - ntrv * ipb/2)).argmin()
-		tder = np.append(tder, (t[kf]+t[ke])/2) # derivative time
-		der = np.append(der, np.mean(a[kf:ke]))
-		kf = ki 
-		ki = ke
-		ipb += 1
-		if ke==kf==ki:
-			break
+#	interp = interp1d(np.array(tder), np.array(trend), kind='previous', fill_value="extrapolate")
+#	trend = interp(np.sort(t))
+	amp1 = a - trend[:int(len(a))]	
+	amp1 = amp1 - amp1[0]
 
-	interp = interp1d(np.array(tder), np.array(der), kind='previous', fill_value="extrapolate")
-	der = interp(np.sort(t))
-
-	amp1 = a - der
-	# for kf in range(int(ntrv/dt), len(a), int(ntrv/dt)):
-	# 	if (len(a) - kf) < int(ntrv/dt):
-	# 		s2 = polynomial(a[ki:], 2)
-	# 		s2 = s2 - s2[0] 
-	# 		# s2 = s2 - (s2[0] - s1[-1]) 
-	# 		# s2 = s2 + (s1[-1] - s1[-2]) # time series continuity 
-	# 		amp1 = np.append(amp1, s2 )
-	# 	else:
-	# 		s2 = polynomial(a[ki:kf], 2)
-	# 		s2 = s2 - s2[0]
-	# 		# try:
-	# 		# 	s2 = s2 - (s2[0] - s1[-1])
-	# 		# 	s2 = s2 + (s1[-1] - s1[-2])
-	# 		# except:
-	# 		# 	pass
-	# 		amp1 = np.append(amp1, s2)
-		
-	# 	ki = kf
-	# 	s1 = s2
-	
-	# amp1 = amp1 - amp1[0]
 	return t, amp1
 
 def GandA94(treg, amp, vr, R, ampinfl):
