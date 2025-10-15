@@ -1265,61 +1265,66 @@ class CentralWidget(QDialog):
 									"Text Files (*.txt *.dat);; All Files (*)")
 			cf.saveData(t, a, outname)
 			return outname
-
-		def savesac(t, a, datafile, out):
+		def inputMetadata(a, t, out):
 			from obspy.core.utcdatetime import UTCDateTime
 			from obspy.core.trace import Trace, Stats
+			header = Stats()
+			network, okPressed = QInputDialog.getText(self, 'Data for header of sac file',
+										'Network name:', QLineEdit.Normal, '')
+			if okPressed and network != '':
+				header.network = network
+				est, okPressed = QInputDialog.getText(self, 'Data for header of sac file',
+										'Station name:', QLineEdit.Normal, '')
+				if okPressed and est != '':
+					header.stattion = est
+				header.delta = np.round(t[1]-t[0],3)
+				channel, okPressed = QInputDialog.getText(self, 'Data for header of sac file',
+											'Channel:', QLineEdit.Normal, 'HH*')
+				if okPressed and channel != 'HH*':
+					header.channel = channel
+				starttime, okPressed = QInputDialog.getText(self, 'Data for header of sac file',
+											'Earthquake origin time (UTC):', QLineEdit.Normal,
+												'yyyy/mm/dd,hh:mm:ss')
+				if okPressed and starttime != 'yyyy/mm/dd,hh:mm:ss':
+					header.starttime = UTCDateTime(starttime)
+			return header
+
+		def savesac(t, a, datafile, out):
 			try:
 				directory = datafile.split('/')
 				date = directory[-1].split('.')
-				year, month, day, est = date[0], date[1], date[2], date[3]
+				year, month, day, est = int(date[0]), date[1], date[2], date[3] #yyy.mm.dd.STA.HH*
 				comp = date[4]
 				header = Stats()
 				network, okPressed = QInputDialog.getText(self, 'Data for header of sac file',
-									'Network name:', QLineEdit.Normal, '')
+								'Network name:', QLineEdit.Normal, '')
 				if okPressed and network != '':
 					header.network = network
-				header.stattion = est
+				header.station = est
 				header.delta = np.round(t[1]-t[0],3)
 				header.channel = 'HH'+comp[0]
 				starttime, okPressed = QInputDialog.getText(self,'Data for header of sac file',
 									'Earthquake origin time (UTC):', QLineEdit.Normal, 'hh:mm:ss')
+				self.text.append(f'Start time (UTC): {starttime}')
 				if okPressed and starttime != 'hh:mm:ss':
 					header.starttime = UTCDateTime(f"{year}-{month}-{day},{starttime}")
 				else:
 					header.starttime = UTCDateTime(f"{year}-{month}-{day},00:00:00")
 				sism = Trace(data=a, header=header)
-				sism.write(outname.split('/')[-1].split('.')[0:-4]+'.sac', format='SAC')
+				sism.write(out.split('.')[:-1]+'.sac', format='SAC')
+				
 			except IndexError as e:
-				header = Stats()
-				network, okPressed = QInputDialog.getText(self, 'Data for header of sac file',
-											'Network name:', QLineEdit.Normal, '')
-				if okPressed and network != '':
-					header.network = network
-					est, okPressed = QInputDialog.getText(self, 'Data for header of sac file',
-											'Station name:', QLineEdit.Normal, '')
-					if okPressed and est != '':
-						header.stattion = est
-					header.delta = np.round(t[1]-t[0],3)
-					channel, okPressed = QInputDialog.getText(self, 'Data for header of sac file',
-												'Channel:', QLineEdit.Normal, 'HH*')
-					if okPressed and channel != 'HH*':
-						header.channel = channel
-					starttime, okPressed = QInputDialog.getText(self, 'Data for header of sac file',
-												'Earthquake origin time (UTC):', QLineEdit.Normal,
-													'yyyy/mm/dd,hh:mm:ss')
-					if okPressed and starttime != 'yyyy/mm/dd,hh:mm:ss':
-						header.starttime = UTCDateTime(starttime)
-				else:
-					pass
+				header = inputMetadata(a, t, out)
 				sism = Trace(data=a, header=header)
-				sism.write(f"{'.'.join(out.split('/')[-1].split('.')[0:7])}.sac", format='SAC')
+				sism.write(f"{out.split('.')[:-1]}+.sac", format='SAC')
 			except ValueError as e:
 				QMessageBox.critical(self,'', str(e))
 				pass
 			except TypeError as e:
-				QMessageBox.critical(self,'', str(e))
-				pass
+				header = inputMetadata(a, t, out)
+				sism = Trace(data=a, header=header)
+				sism.write(f"{out.split('.')[:-1]}+.sac", format='SAC')
+
 		#################################################################################
 		try:
 			# previous directory to save data
@@ -1347,7 +1352,7 @@ class CentralWidget(QDialog):
 					pass
 			elif okPressed and item == 'Curvature and resampled':
 				try:
-					saveCurvature(t_ga_res, amp_res, tapr_res, amp1_res)
+					outname = saveCurvature(t_ga_res, amp_res, tapr_res, amp1_res)
 					answer = QMessageBox.question(self, 'sac',
 											'Save as sac format?',
 						QMessageBox.Yes | QMessageBox.No)

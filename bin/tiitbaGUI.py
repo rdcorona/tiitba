@@ -52,7 +52,7 @@ class InterfazMain(QMainWindow):
 	# Sets Main Window
 		DSpath = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)),
 					os.pardir))
-		self.setWindowTitle('TIITBA V1.0.0')
+		self.setWindowTitle('TIITBA V1.2.0')
 		self.setWindowIcon(QIcon(f"{DSpath}/Images/logo.png"))
 		self.statusBar().showMessage('TIITBA V1.0.2')
 	# Central Widget from Class QWidget
@@ -147,7 +147,7 @@ class InterfazMain(QMainWindow):
 		self.move(qr.topCenter())
 
 	def closeEvent(self, event):
-		reply = QMessageBox.question(self, 'TIITBA V1.0.0',
+		reply = QMessageBox.question(self, 'TIITBA V1.2.0',
 							'Close Tiitba-GUI?',
 					QMessageBox.No | QMessageBox.Yes)
 		if reply == QMessageBox.Yes:
