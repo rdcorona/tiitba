@@ -4,19 +4,19 @@ Tiitba it's a Python3 open-source graphical user interface (GUI), developed to v
 
 The functions for basic corrections are codes developed by the authors based on the theory that describes the operation and characteristics of Wiechert mechanical instruments.  
 
-Users can check the R.D. Corona-Fernandez [GitLab](https://gitlab.com/rdcorona/tiitba) or look up for the lastes version at zenodo repository.  
+Users can check the R.D. Corona-Fernandez [GitHub](https://github.com/rdcorona/tiitba) or look up for the lastes version at zenodo repository.  
 
 For more information contact the authors by email:  
  ***rdcorona@igeofisica.unam.mx / santoyo@igeofisica.unam.mx***  
 
 The use of the GUI it's under user risk, please cite this code of terms of the related technical paper:  
 
-- Corona- Fernández, R.D. & Santoyo, M.Á. **(2022)** Re- examination of the 1928 Parral, Mexico earthquake (M6.3) using a new multiplatform graphical vectorization and correction software for legacy seismic data. Geoscience Data Journal, 00, 1– 15. Available from: [https://doi.org/10.1002/gdj3.159](https://doi.org/10.1002/gdj3.159)  
+- Corona-Fernández, R.D. & Santoyo, M.Á. **(2022)** Re- examination of the 1928 Parral, Mexico earthquake (M6.3) using a new multiplatform graphical vectorization and correction software for legacy seismic data. Geoscience Data Journal, 00, 1– 15. Available from: [https://doi.org/10.1002/gdj3.159](https://doi.org/10.1002/gdj3.159)  
 And with this associated repository DOI:  
 
 - **DOI: 10.5281/zenodo.6272823**
 
-## Last modified September 2022, version 1.0.2  
+## Last modified Oct 2025, version 1.2.0 
 
 ### Note: This SOFTWARE may be used by any individual or corporation for any purpose except for re-selling or re-distributing the SOFTWARE  
 
@@ -35,13 +35,12 @@ Tiitba is a new interactive portable multi-platform software developed to vect
 This software aims for the preservation of historical seismograms, mainly those from the early 20th century recorded on smoked paper, and the use of the vectorized time-series for a modern seismological re-analysis.
 
 ## DOWNLOAD
-
-Download all the files from the zenodo repository. DOI: 10.5281/zenodo.6272823  
-Unpack the bin.tar and Pictures.tar files, the resulting folders should be placed in the same directory as the rest of the files.  
+1.- https://github.com/rdcorona/tiitba 
+2.- Download all the files from the zenodo repository. DOI: 10.5281/zenodo.6272823  
+    Unpack the bin.tar and Pictures.tar files, the resulting folders should be placed in the same directory as the rest of the files.  
 
 ## INSTALATION
-
-Tiitba is coded on Python3, we recommend Python by Anaconda for running the program.  
+Tiitba is coded on Python3, we recommend Python by Anaconda for running the program and/or create an virtual ENV with the .yml file.  
 
 For Linux and MacOS operating systems run the bash **file install_??.sh**  
 This file checks if Anaconda3 is installed and creates the tiitba virtual environment.  
